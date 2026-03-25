@@ -68,7 +68,7 @@ def extract_and_window(directory_path, split_name, seq_length=10, pred_step=1):
 
 
 if __name__ == "__main__":
-    path = 'processedData'
+    path = 'processedData/processedData'
     
     # Paramètres de la fenêtre temporelle
     SEQUENCE_LENGTH = 10 # Nombre d'instants t utilisés pour la prédiction
