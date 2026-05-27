@@ -1,5 +1,5 @@
 # Nokia CSI Prediction
-### Development of an artificial intelligence framework designed to predict the future state of a radio channel in mobile telecommunications (5G/6G) based on historical observations.
+### Development of an AI framework designed to predict the future state of a radio channel in mobile telecommunications (5G/6G) based on historical observations.
 
 This repository contains a framework for predicting Channel State Information (CSI) in wireless communications (e.g., 5G/6G) using deep learning and traditional mathematical baselines. The goal is to accurately forecast the future state of an RF channel ($H_{t+1}$) based on a sequence of past channel observations.
 
