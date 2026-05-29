@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useRef, useState } from 'react';
-import { Radio, Zap, ShieldAlert, CheckCircle2, Waves, Activity } from 'lucide-react';
+import { Zap, Activity } from 'lucide-react';
 
 interface Device {
   id: number;
@@ -30,9 +30,7 @@ export default function NetworkSimulation() {
     const height = canvas.height = 600;
 
     const NOKIA_BLUE = '#1241C6';
-    const SIGNAL_RED = '#EF4444';
     const GRAPHITE = '#2C2C2C';
-    const PAPER_WHITE = '#FDFDFD';
 
     const antenna = { x: 150, y: height / 2 };
     const devices: Device[] = [
@@ -122,7 +120,6 @@ export default function NetworkSimulation() {
 
       devices.forEach(dev => {
         const time = Date.now() / 1000;
-        const color = isCSIPredictionEnabled ? NOKIA_BLUE : GRAPHITE;
         const jitter = isCSIPredictionEnabled ? 0 : Math.sin(time * 10 + dev.id) * 8;
         
         ctx.beginPath();

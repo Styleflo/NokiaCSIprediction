@@ -7,7 +7,7 @@ export default function Footer() {
             © 2026 Nokia Research • Hackathon Edition
           </div>
           <div className="text-xs text-text-muted italic">
-            "Innovation in Channel State Information Prediction for Next-Generation Wireless Networks"
+            &quot;Innovation in Channel State Information Prediction for Next-Generation Wireless Networks&quot;
           </div>
           <div className="mt-4 h-px w-8 bg-accent-muted" />
         </div>

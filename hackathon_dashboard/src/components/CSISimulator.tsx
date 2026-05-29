@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useRef, useState } from 'react';
-import { Radio, Zap, Activity, ShieldAlert, CheckCircle2 } from 'lucide-react';
+import { Radio, ShieldAlert, CheckCircle2 } from 'lucide-react';
 
 interface User {
   id: number;

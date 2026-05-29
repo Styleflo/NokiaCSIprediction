@@ -17,7 +17,6 @@ export default function AntennaBackground() {
     let height = window.innerHeight;
 
     const NOKIA_BLUE = '#1241C6';
-    const GRAPHITE = '#2C2C2C';
     const SIGNAL_RED = '#D64045';
 
     const resize = () => {
@@ -62,7 +61,7 @@ export default function AntennaBackground() {
     const transmissions: Transmission[] = [];
     const numTransmissions = 20;
 
-    const createTransmission = () => {
+    const createTransmission = (): Transmission => {
       const source = antennas[Math.floor(Math.random() * antennas.length)];
       let target = antennas[Math.floor(Math.random() * antennas.length)];
       while (target === source) {

@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { Cpu, Zap, Target, TrendingDown, BookOpen, Network, Signal, ShieldCheck } from "lucide-react";
+import { Cpu, Target, BookOpen, Network, Signal, ShieldCheck } from "lucide-react";
 import NetworkSimulation from "@/components/NetworkSimulation";
 
 export default function Home() {
@@ -16,7 +16,7 @@ export default function Home() {
           with Generative AI
         </h1>
         <p className="max-w-3xl mx-auto text-lg text-text-muted leading-relaxed mb-12">
-          Reducing Channel State Information (CSI) overhead is the "holy grail" of Massive MIMO. 
+          Reducing Channel State Information (CSI) overhead is the &quot;holy grail&quot; of Massive MIMO. 
           Our research leverages Diffusion models to compress feedback by 128x while maintaining 
           unprecedented reconstruction accuracy.
         </p>
@@ -42,7 +42,7 @@ export default function Home() {
               <div className="space-y-6 text-text-muted">
                 <p>
                   In Massive MIMO, the Base Station needs precise knowledge of the wireless channel (CSI) 
-                  to focus energy toward specific users. However, in FDD mode, the UE must "feedback" 
+                  to focus energy toward specific users. However, in FDD mode, the UE must &quot;feedback&quot; 
                   this high-dimensional data back to the station.
                 </p>
                 <div className="p-6 bg-nokia-blue-soft rounded-2xl border border-nokia-blue/5">
@@ -50,7 +50,7 @@ export default function Home() {
                   <p className="text-sm">of uplink bandwidth can be consumed just by CSI feedback in dense antenna arrays, leaving almost no room for user data.</p>
                 </div>
                 <p>
-                  Our goal was to find a "latent representation" that captures the essence of the channel 
+                  Our goal was to find a &quot;latent representation&quot; that captures the essence of the channel 
                   in just a few bits, effectively solving the trade-off between accuracy and overhead.
                 </p>
               </div>
