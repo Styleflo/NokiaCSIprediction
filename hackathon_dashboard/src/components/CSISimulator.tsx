@@ -140,7 +140,7 @@ export default function CSISimulator() {
             <h3 className="text-4xl font-black tracking-tighter text-foreground uppercase">Downlink Analysis</h3>
           </div>
           <p className="text-sm text-text-muted max-w-xl leading-relaxed font-medium">
-            Visualizing data delivery precision. **CSI Prediction** allows the base station to focus energy with surgical accuracy, 
+            Visualizing data delivery precision. CSI Prediction allows the base station to focus energy with surgical accuracy, 
             eliminating the jitter and fragmentation seen in legacy systems.
           </p>
         </div>

@@ -92,7 +92,7 @@ export default function Home() {
               </div>
               <h3 className="text-4xl font-bold">Matrix Accuracy</h3>
               <p className="text-lg text-text-muted">
-                Visualizing the precision of our **Diffusion Model**. The reconstructed CSI matrix captures the intricate spatial-temporal patterns with near-zero deviation from the ground truth.
+                Visualizing the precision of our Diffusion Model. The reconstructed CSI matrix captures the intricate spatial-temporal patterns with near-zero deviation from the ground truth.
               </p>
             </div>
             <div className="relative aspect-video w-full rounded-3xl overflow-hidden shadow-inner ring-1 ring-gray-200 bg-white">
@@ -106,14 +106,14 @@ export default function Home() {
           </div>
 
           {/* Loss Curve Card */}
-          <div className="glass-card rounded-[3rem] p-10 md:p-14 border-2 border-nokia-blue/5 shadow-xl">
+          <div className="glass-card rounded-[3rem] p-10 md:p-14 border-2 border-nokia-blue/20 shadow-2xl shadow-nokia-blue/5">
             <div className="mb-12 space-y-4">
-              <div className="inline-block px-4 py-1 rounded-full bg-cyber-cyan/10 text-cyan-600 text-[12px] font-bold uppercase tracking-widest">
+              <div className="inline-block px-4 py-1 rounded-full bg-nokia-blue/10 text-nokia-blue text-[12px] font-bold uppercase tracking-widest">
                 Training Dynamics
               </div>
               <h3 className="text-4xl font-bold">Convergence Rate</h3>
               <p className="text-lg text-text-muted">
-                Monitoring the NMSE reduction over 200 epochs. The **Conv3D + CBAM** model exhibits rapid and stable convergence, proving its efficiency for real-time training scenarios.
+                Monitoring the NMSE reduction over 200 epochs. The Conv3D + CBAM model exhibits rapid and stable convergence, proving its efficiency for real-time training scenarios.
               </p>
             </div>
             <div className="relative aspect-video w-full rounded-3xl overflow-hidden shadow-inner ring-1 ring-gray-200 bg-white">
@@ -179,10 +179,11 @@ export default function Home() {
               </thead>
               <tbody className="divide-y divide-accent-muted">
                 {[
-                  { name: "Diffusion (DDPM)", nmse: "0.0031", dim: "32", gain: "+74.1%" },
-                  { name: "Conv3D + CBAM", nmse: "0.0033", dim: "32", gain: "+72.5%" },
-                  { name: "CNN + Transformer", nmse: "0.0045", dim: "64", gain: "+62.5%" },
-                  { name: "ConvLSTM (Baseline)", nmse: "0.0120", dim: "256", gain: "0.0%" },
+                  { name: "Diffusion (DDPM)", nmse: "0.0031", dim: "32", gain: "+88.9%" },
+                  { name: "Conv3D + CBAM", nmse: "0.0033", dim: "32", gain: "+88.2%" },
+                  { name: "CNN + Transformer", nmse: "0.0045", dim: "64", gain: "+83.9%" },
+                  { name: "ConvLSTM", nmse: "0.0120", dim: "256", gain: "+57.1%" },
+                  { name: "CSI futur = dernier CSI connu", nmse: "0.0280", dim: "-", gain: "0.0%" },
                 ].map((row, idx) => (
                   <tr key={idx} className={idx === 0 ? "bg-nokia-blue/5" : "hover:bg-gray-50 transition-colors"}>
                     <td className="px-8 py-5 font-bold">{row.name}</td>
