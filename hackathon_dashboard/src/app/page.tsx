@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { Cpu, Zap, Target, TrendingDown, BookOpen, Network, Signal, ShieldCheck } from "lucide-react";
+import NetworkSimulation from "@/components/NetworkSimulation";
 
 export default function Home() {
   return (
@@ -71,6 +72,9 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* Network Simulation Section */}
+      <NetworkSimulation />
 
       {/* Results Section - The Graphics */}
       <section className="py-24 px-6 max-w-7xl mx-auto" id="results">
