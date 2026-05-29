@@ -3,6 +3,15 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Radio, Zap, Activity, ShieldAlert, CheckCircle2, Info, Maximize2 } from 'lucide-react';
 
+interface User {
+  id: number;
+  x: number;
+  y: number;
+  speed: number;
+  label: string;
+  color: string;
+}
+
 /**
  * NetworkSimulation: A dedicated section showcasing the CSI Prediction use case.
  * Designed with the 'environment-simulator' skill for maximum visual impact.
@@ -27,7 +36,7 @@ export default function NetworkSimulation() {
 
     // Simulation Entities
     const antenna = { x: 200, y: height / 2 };
-    const users = [
+    const users: User[] = [
       { id: 1, x: 850, y: 150, speed: 0.4, label: "0x00A1", color: '#FF9F1C' },
       { id: 2, x: 1000, y: 300, speed: 0.6, label: "0x00B2", color: '#2EC4B6' },
       { id: 3, x: 900, y: 480, speed: 0.3, label: "0x00C3", color: '#E71D36' },
@@ -61,7 +70,7 @@ export default function NetworkSimulation() {
       ctx.restore();
     };
 
-    const drawUser = (user: any) => {
+    const drawUser = (user: User) => {
       ctx.save();
       ctx.translate(user.x, user.y);
 
@@ -108,7 +117,7 @@ export default function NetworkSimulation() {
         ctx.lineDashOffset = -offset;
         ctx.strokeStyle = color;
         ctx.lineWidth = isAIPredictionActive ? 4 : 1.5;
-        ctx.globalAlpha = isAIOptimized ? 0.9 : 0.5;
+        ctx.globalAlpha = isAIPredictionActive ? 0.9 : 0.5;
 
         const cpX = (antenna.x + user.x) / 2;
         const cpY = (antenna.y + user.y) / 2 - 150;
