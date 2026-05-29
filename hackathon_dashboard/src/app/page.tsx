@@ -1,6 +1,5 @@
 import Image from "next/image";
 import { Cpu, Zap, Target, TrendingDown, BookOpen, Network, Signal, ShieldCheck } from "lucide-react";
-import CSISimulator from "@/components/CSISimulator";
 
 export default function Home() {
   return (
@@ -71,15 +70,6 @@ export default function Home() {
             </div>
           </div>
         </div>
-      </section>
-
-      {/* Simulation Section */}
-      <section className="py-24 px-6 max-w-6xl mx-auto">
-        <div className="text-center mb-16">
-          <h2 className="text-4xl font-bold mb-4">Seeing is Believing</h2>
-          <p className="text-text-muted text-lg">Interact with our real-time simulation to understand how AI-based CSI prediction revolutionizes spectral efficiency.</p>
-        </div>
-        <CSISimulator />
       </section>
 
       {/* Results Section - The Graphics */}

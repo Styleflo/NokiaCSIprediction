@@ -3,8 +3,20 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Radio, Zap, Activity, ShieldAlert, CheckCircle2 } from 'lucide-react';
 
+interface User {
+  id: number;
+  x: number;
+  y: number;
+  speed: number;
+  label: string;
+}
+
+/**
+ * CSISimulator: A simplified, high-fidelity network environment simulation.
+ * Focuses on Downlink Efficiency (Base Station -> User) to demonstrate CSI impact.
+ */
 export default function CSISimulator() {
-  const [useCSIPrediction, setUseCSIPrediction] = useState(false);
+  const [isAIOptimized, setIsAIOptimized] = useState(false);
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -18,327 +30,171 @@ export default function CSISimulator() {
     const height = canvas.height = 600;
 
     const NOKIA_BLUE = '#1241C6';
-    const SIGNAL_RED = '#EF4444'; 
+    const SIGNAL_RED = '#EF4444';
     const GRAPHITE = '#2C2C2C';
 
-    // Mixed Distribution of Antennas and Users
-    const antennas = [
-      { x: 200, y: 150, pulse: 0 },
-      { x: 500, y: 450, pulse: 1 },
-      { x: 850, y: 150, pulse: 2 },
-      { x: 1000, y: 400, pulse: 0.5 },
-      { x: 300, y: 500, pulse: 1.5 },
+    // 1. Spatially Distributed Entities (No overlapping)
+    const antenna = { x: 180, y: height / 2 };
+    const users: User[] = [
+      { id: 1, x: 800, y: 120, speed: 0.3, label: "0xAlpha" },
+      { id: 2, x: 1000, y: 250, speed: 0.5, label: "0xBeta" },
+      { id: 3, x: 850, y: 480, speed: 0.2, label: "0xGamma" },
+      { id: 4, x: 650, y: 320, speed: 0.4, label: "0xDelta" },
     ];
 
-    const users = [
-      { id: 1, x: 400, y: 100, speed: 0.4, offset: 0, antIdx: 0, label: "UE-01" },
-      { id: 2, x: 650, y: 250, speed: 0.7, offset: 10, antIdx: 1, label: "UE-02" },
-      { id: 3, x: 800, y: 500, speed: 0.3, offset: 5, antIdx: 2, label: "UE-03" },
-      { id: 4, x: 100, y: 450, speed: 0.6, offset: 20, antIdx: 4, label: "UE-04" },
-      { id: 5, x: 1100, y: 200, speed: 0.5, offset: 15, antIdx: 3, label: "UE-05" },
-      { id: 6, x: 600, y: 100, speed: 0.8, offset: 30, antIdx: 0, label: "UE-06" },
-      { id: 7, x: 900, y: 550, speed: 0.4, offset: 40, antIdx: 3, label: "UE-07" },
-      { id: 8, x: 750, y: 300, speed: 0.6, offset: 12, antIdx: 2, label: "UE-08" },
-    ];
-
-    const drawMicroAntenna = (ant: { x: number, y: number, pulse: number }) => {
+    const drawAntenna = (x: number, y: number) => {
       ctx.save();
-      ctx.translate(ant.x, ant.y);
+      ctx.translate(x, y);
 
-      // Minimalist Mast
+      // Minimalist Architectural Totem
+      ctx.fillStyle = GRAPHITE;
+      ctx.fillRect(-2, -150, 4, 300); // Main mast
+      
+      // Rectangular Arrays
+      for(let i=0; i<3; i++) {
+        ctx.fillRect(-15, -120 + i*40, 30, 20);
+      }
+
+      // Transmission Aura
+      const s = (Math.sin(Date.now() / 800) + 1) / 2;
+      ctx.strokeStyle = isAIOptimized ? NOKIA_BLUE : SIGNAL_RED;
+      ctx.lineWidth = 1;
+      ctx.globalAlpha = 0.15 * (1-s);
+      ctx.beginPath();
+      ctx.arc(0, -100, 20 + s * 150, 0, Math.PI * 2);
+      ctx.stroke();
+
+      ctx.restore();
+    };
+
+    const drawUser = (user: User) => {
+      ctx.save();
+      ctx.translate(user.x, user.y);
+
+      // Minimalist Device Symbol
       ctx.strokeStyle = GRAPHITE;
       ctx.lineWidth = 2;
-      ctx.beginPath();
-      ctx.moveTo(0, 0);
-      ctx.lineTo(0, 20);
-      ctx.stroke();
-
-      // Small Array Panel
-      ctx.fillStyle = GRAPHITE;
-      ctx.fillRect(-4, -8, 8, 14);
-
-      // Signal Pulse
-      const s = (Math.sin(Date.now() / 400 + ant.pulse) + 1) / 2;
-      ctx.strokeStyle = useCSIPrediction ? NOKIA_BLUE : SIGNAL_RED;
-      ctx.globalAlpha = (useCSIPrediction ? 0.2 : 0.5) * s;
-      ctx.beginPath();
-      ctx.arc(0, -5, 5 + s * 25, 0, Math.PI * 2);
-      ctx.stroke();
+      ctx.strokeRect(-12, -20, 24, 40);
       
-      ctx.globalAlpha = 1;
+      ctx.fillStyle = GRAPHITE;
+      ctx.fillRect(-1, -15, 2, 4); // Top sensor
+      
+      // Tag
+      ctx.font = '700 10px monospace';
+      ctx.globalAlpha = 0.3;
+      ctx.fillText(user.label, -20, 38);
+
       ctx.restore();
     };
 
     const draw = () => {
       ctx.clearRect(0, 0, width, height);
 
-      // Grid
-      ctx.strokeStyle = '#f8f8f8';
+      // Subtle Background Texture
+      ctx.strokeStyle = '#f4f4f4';
       ctx.lineWidth = 1;
-      for(let i=0; i<width; i+=120) {
+      for(let i=0; i<width; i+=150) {
         ctx.beginPath(); ctx.moveTo(i, 0); ctx.lineTo(i, height); ctx.stroke();
       }
-      for(let i=0; i<height; i+=120) {
-        ctx.beginPath(); ctx.moveTo(0, i); ctx.lineTo(width, i); ctx.stroke();
-      }
 
-      // Communications
+      // Downlink-only Communication Logic
       users.forEach(user => {
-        const isBad = !useCSIPrediction;
-        const color = isBad ? SIGNAL_RED : NOKIA_BLUE;
-        const ant = antennas[user.antIdx];
-        
-        // Data Path (Downlink)
+        const color = isAIOptimized ? NOKIA_BLUE : SIGNAL_RED;
+        const offset = (Date.now() * 0.08 * user.speed) % 100;
+
         ctx.beginPath();
-        ctx.setLineDash(isBad ? [2, 6] : [20, 15]);
-        ctx.lineDashOffset = -user.offset;
+        // Contrast: Legacy is fragmented, AI is solid/fluid
+        ctx.setLineDash(isAIOptimized ? [60, 20] : [4, 12]);
+        ctx.lineDashOffset = -offset;
         ctx.strokeStyle = color;
-        ctx.lineWidth = isBad ? 2 : 2.5;
-        ctx.globalAlpha = isBad ? 0.8 : 0.5;
+        ctx.lineWidth = isAIOptimized ? 3 : 1;
+        ctx.globalAlpha = isAIOptimized ? 0.8 : 0.4;
         
-        const cpX = (ant.x + user.x) / 2;
-        const cpY = (ant.y + user.y) / 2 - 50;
+        // Pure geometric paths
+        const cpX = (antenna.x + user.x) / 2;
+        const cpY = (antenna.y + user.y) / 2 - 120;
         
-        ctx.moveTo(ant.x, ant.y - 5);
+        ctx.moveTo(antenna.x, antenna.y - 100);
         ctx.quadraticCurveTo(cpX, cpY, user.x, user.y);
         ctx.stroke();
-
-        // Feedback Path (Uplink Overhead)
-        if (isBad) {
-            ctx.beginPath();
-            ctx.setLineDash([4, 4]);
-            ctx.lineDashOffset = user.offset * 3;
-            ctx.strokeStyle = color;
-            ctx.lineWidth = 10; // Extra thick for problem visibility
-            ctx.globalAlpha = 0.2;
-            ctx.moveTo(user.x, user.y);
-            ctx.quadraticCurveTo(cpX, cpY + 80, ant.x, ant.y);
-            ctx.stroke();
-
-            // Clogged particles
-            for(let i=0; i<2; i++) {
-                const t = ((user.offset * 0.04 + i*0.5) % 1);
-                const px = user.x * (1-t) + ant.x * t;
-                const py = user.y * (1-t) + ant.y * t + Math.sin(t * Math.PI) * 60;
-                ctx.fillStyle = SIGNAL_RED;
-                ctx.globalAlpha = 0.7;
-                ctx.beginPath();
-                ctx.arc(px, py, 4, 0, Math.PI * 2);
-                ctx.fill();
-            }
-        } else {
-            ctx.beginPath();
-            ctx.setLineDash([1, 20]);
-            ctx.lineDashOffset = user.offset;
-            ctx.strokeStyle = NOKIA_BLUE;
-            ctx.lineWidth = 1;
-            ctx.globalAlpha = 0.4;
-            ctx.moveTo(user.x, user.y);
-            ctx.lineTo(ant.x, ant.y - 5);
-            ctx.stroke();
-        }
-
-        // Device
-        ctx.setLineDash([]);
-        ctx.globalAlpha = 1;
-        ctx.strokeStyle = GRAPHITE;
-        ctx.lineWidth = 2;
-        ctx.strokeRect(user.x - 7, user.y - 11, 14, 22);
-        ctx.fillStyle = GRAPHITE;
-        ctx.fillRect(user.x - 2, user.y + 6, 4, 1.5);
-        
-        user.offset += user.speed * (isBad ? 2.8 : 1.3);
       });
 
-      // Antennas
-      antennas.forEach(drawMicroAntenna);
+      drawAntenna(antenna.x, antenna.y);
+      users.forEach(drawUser);
 
       animationFrameId = requestAnimationFrame(draw);
     };
 
     draw();
     return () => cancelAnimationFrame(animationFrameId);
-  }, [useCSIPrediction]);
+  }, [isAIOptimized]);
 
   return (
-    <div className="sketch-card p-8 bg-white/80 backdrop-blur-sm overflow-hidden">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-8">
-        <div>
-          <h3 className="text-2xl font-bold flex items-center gap-2 mb-2">
-            <Radio className="h-6 w-6 text-nokia-blue" />
-            Live Network Simulation
-          </h3>
-          <p className="text-sm text-text-muted max-w-md">
-            Visualizing the trade-off between CSI feedback overhead and reconstruction accuracy.
+    <div className="sketch-card p-12 bg-white/95 backdrop-blur-2xl overflow-hidden mb-24">
+      <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-12 mb-16">
+        <div className="space-y-4">
+          <div className="flex items-center gap-4">
+            <div className={`w-10 h-10 rounded-2xl flex items-center justify-center ${isAIOptimized ? 'bg-nokia-blue/10 text-nokia-blue' : 'bg-red-500/10 text-red-500'}`}>
+              <Radio className="h-6 w-6" />
+            </div>
+            <h3 className="text-4xl font-black tracking-tighter text-foreground uppercase">Downlink Analysis</h3>
+          </div>
+          <p className="text-sm text-text-muted max-w-xl leading-relaxed font-medium">
+            Visualizing data delivery precision. **CSI Prediction** allows the base station to focus energy with surgical accuracy, 
+            eliminating the jitter and fragmentation seen in legacy systems.
           </p>
         </div>
         
-        <div className="flex gap-2 p-1 bg-background border-2 border-foreground rounded-xl">
+        <div className="flex p-1.5 bg-gray-50 border-2 border-foreground rounded-[2rem] shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
           <button 
-            onClick={() => setUseCSIPrediction(false)}
-            className={`px-4 py-2 rounded-lg text-xs font-bold transition-all ${!useCSIPrediction ? 'bg-foreground text-white' : 'hover:bg-gray-100'}`}
+            onClick={() => setIsAIOptimized(false)}
+            className={`px-10 py-4 rounded-[1.5rem] text-xs font-black transition-all uppercase tracking-[0.2em] ${!isAIOptimized ? 'bg-foreground text-white' : 'hover:bg-gray-200'}`}
           >
-            Legacy (FDD)
+            Legacy
           </button>
           <button 
-            onClick={() => setUseCSIPrediction(true)}
-            className={`px-4 py-2 rounded-lg text-xs font-bold transition-all ${useCSIPrediction ? 'bg-nokia-blue text-white border-nokia-blue' : 'hover:bg-gray-100'}`}
+            onClick={() => setIsAIOptimized(true)}
+            className={`px-10 py-4 rounded-[1.5rem] text-xs font-black transition-all uppercase tracking-[0.2em] ${isAIOptimized ? 'bg-nokia-blue text-white' : 'hover:bg-gray-200'}`}
           >
-            With CSI Prediction
+            AI Active
           </button>
         </div>
       </div>
 
-      <div className="relative aspect-video w-full rounded-2xl overflow-hidden border-2 border-foreground bg-white mb-8 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
+      <div className="relative aspect-video w-full rounded-[4rem] overflow-hidden border-2 border-foreground bg-white shadow-[30px_30px_0px_0px_rgba(0,0,0,0.03)]">
         <canvas ref={canvasRef} className="w-full h-full" />
         
-        {/* Real-time Stats Overlay */}
-        <div className="absolute top-4 right-4 space-y-2">
-          <div className={`p-3 rounded-lg border-2 border-foreground bg-white flex items-center gap-3 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]`}>
-            <Activity className={`h-4 w-4 ${useCSIPrediction ? 'text-nokia-blue' : 'text-red-500 animate-pulse'}`} />
-            <div className="text-[10px] font-bold uppercase tracking-widest">
-              Feedback Load: <span className="text-sm block">{useCSIPrediction ? '0.78 Mbps' : '102.4 Mbps'}</span>
+        {/* Minimalist Data Readout */}
+        <div className="absolute top-12 right-12 flex gap-12">
+          <div className="space-y-1">
+            <div className="text-[10px] font-bold text-gray-300 uppercase tracking-widest">Network Load</div>
+            <div className={`text-4xl font-black font-mono ${isAIOptimized ? 'text-nokia-blue' : 'text-red-500'}`}>
+              {isAIOptimized ? '0.78' : '102.4'}<span className="text-xs ml-2">MB/S</span>
             </div>
           </div>
-          <div className={`p-3 rounded-lg border-2 border-foreground bg-white flex items-center gap-3 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]`}>
-            <Zap className={`h-4 w-4 ${useCSIPrediction ? 'text-nokia-blue' : 'text-yellow-500'}`} />
-            <div className="text-[10px] font-bold uppercase tracking-widest">
-              Spectral Efficiency: <span className="text-sm block">{useCSIPrediction ? '24.2 bps/Hz' : '8.4 bps/Hz'}</span>
+          <div className="space-y-1">
+            <div className="text-[10px] font-bold text-gray-300 uppercase tracking-widest">Efficiency</div>
+            <div className="text-4xl font-black font-mono text-foreground">
+              {isAIOptimized ? '+128' : '0'}<span className="text-xs ml-2">X</span>
             </div>
           </div>
         </div>
 
-        {/* Status Badge */}
-        <div className="absolute bottom-4 left-4">
-          <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full border-2 border-foreground bg-white font-bold text-[10px] uppercase shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]`}>
-            {useCSIPrediction ? (
+        {/* Dynamic Status Badge */}
+        <div className="absolute bottom-12 left-12">
+          <div className={`flex items-center gap-4 px-8 py-4 rounded-full border-2 border-foreground bg-white font-black text-xs uppercase tracking-[0.3em] shadow-[10px_10px_0px_0px_rgba(0,0,0,1)]`}>
+            {isAIOptimized ? (
               <>
-                <CheckCircle2 className="h-3 w-3 text-nokia-blue" />
-                System Optimized
+                <CheckCircle2 className="h-5 w-5 text-nokia-blue" />
+                Optimized Beamforming
               </>
             ) : (
               <>
-                <ShieldAlert className="h-3 w-3 text-red-500" />
-                Bandwidth Constrained
+                <ShieldAlert className="h-5 w-5 text-red-500" />
+                Signal Fragmentation
               </>
             )}
           </div>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 text-sm leading-relaxed">
-        <div className="space-y-4">
-          <h4 className="font-bold flex items-center gap-2 underline decoration-nokia-blue decoration-2 underline-offset-4">
-            Legacy Challenge
-          </h4>
-          <p className="text-text-muted">
-            In traditional systems, the User Equipment (UE) sends raw CSI matrices back to the base station. 
-            This consumes massive uplink bandwidth, creating a "feedback bottleneck" that limits the number of active users.
-          </p>
-        </div>
-        <div className="space-y-4">
-          <h4 className="font-bold flex items-center gap-2 underline decoration-nokia-blue decoration-2 underline-offset-4">
-            AI-Driven Future
-          </h4>
-          <p className="text-text-muted">
-            Our **Diffusion-based prediction** allows the system to reconstruct high-fidelity CSI using only a tiny fraction of the data. 
-            This releases 128x more bandwidth for actual user content.
-          </p>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-
-    draw();
-    return () => cancelAnimationFrame(animationFrameId);
-  }, [useCSIPrediction]);
-
-  return (
-    <div className="sketch-card p-8 bg-white/80 backdrop-blur-sm overflow-hidden">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-8">
-        <div>
-          <h3 className="text-2xl font-bold flex items-center gap-2 mb-2">
-            <Radio className="h-6 w-6 text-nokia-blue" />
-            Live Network Simulation
-          </h3>
-          <p className="text-sm text-text-muted max-w-md">
-            Visualizing the trade-off between CSI feedback overhead and reconstruction accuracy.
-          </p>
-        </div>
-        
-        <div className="flex gap-2 p-1 bg-background border-2 border-foreground rounded-xl">
-          <button 
-            onClick={() => setUseCSIPrediction(false)}
-            className={`px-4 py-2 rounded-lg text-xs font-bold transition-all ${!useCSIPrediction ? 'bg-foreground text-white' : 'hover:bg-gray-100'}`}
-          >
-            Legacy (FDD)
-          </button>
-          <button 
-            onClick={() => setUseCSIPrediction(true)}
-            className={`px-4 py-2 rounded-lg text-xs font-bold transition-all ${useCSIPrediction ? 'bg-nokia-blue text-white border-nokia-blue' : 'hover:bg-gray-100'}`}
-          >
-            With CSI Prediction
-          </button>
-        </div>
-      </div>
-
-      <div className="relative aspect-video w-full rounded-2xl overflow-hidden border-2 border-foreground bg-white mb-8 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
-        <canvas ref={canvasRef} className="w-full h-full" />
-        
-        {/* Real-time Stats Overlay */}
-        <div className="absolute top-4 right-4 space-y-2">
-          <div className={`p-3 rounded-lg border-2 border-foreground bg-white flex items-center gap-3 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]`}>
-            <Activity className={`h-4 w-4 ${useCSIPrediction ? 'text-nokia-blue' : 'text-red-500 animate-pulse'}`} />
-            <div className="text-[10px] font-bold uppercase tracking-widest">
-              Feedback Load: <span className="text-sm block">{useCSIPrediction ? '0.78 Mbps' : '102.4 Mbps'}</span>
-            </div>
-          </div>
-          <div className={`p-3 rounded-lg border-2 border-foreground bg-white flex items-center gap-3 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]`}>
-            <Zap className={`h-4 w-4 ${useCSIPrediction ? 'text-nokia-blue' : 'text-yellow-500'}`} />
-            <div className="text-[10px] font-bold uppercase tracking-widest">
-              Spectral Efficiency: <span className="text-sm block">{useCSIPrediction ? '24.2 bps/Hz' : '8.4 bps/Hz'}</span>
-            </div>
-          </div>
-        </div>
-
-        {/* Status Badge */}
-        <div className="absolute bottom-4 left-4">
-          <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full border-2 border-foreground bg-white font-bold text-[10px] uppercase shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]`}>
-            {useCSIPrediction ? (
-              <>
-                <CheckCircle2 className="h-3 w-3 text-nokia-blue" />
-                System Optimized
-              </>
-            ) : (
-              <>
-                <ShieldAlert className="h-3 w-3 text-red-500" />
-                Bandwidth Constrained
-              </>
-            )}
-          </div>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 text-sm leading-relaxed">
-        <div className="space-y-4">
-          <h4 className="font-bold flex items-center gap-2 underline decoration-nokia-blue decoration-2 underline-offset-4">
-            Legacy Challenge
-          </h4>
-          <p className="text-text-muted">
-            In traditional systems, the User Equipment (UE) sends raw CSI matrices back to the base station. 
-            This consumes massive uplink bandwidth, creating a "feedback bottleneck" that limits the number of active users.
-          </p>
-        </div>
-        <div className="space-y-4">
-          <h4 className="font-bold flex items-center gap-2 underline decoration-nokia-blue decoration-2 underline-offset-4">
-            AI-Driven Future
-          </h4>
-          <p className="text-text-muted">
-            Our **Diffusion-based prediction** allows the system to reconstruct high-fidelity CSI using only a tiny fraction of the data. 
-            This releases 128x more bandwidth for actual user content.
-          </p>
         </div>
       </div>
     </div>
